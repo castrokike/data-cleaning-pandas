@@ -1,18 +1,13 @@
 import pandas as pd
 import warnings
 from pandas.core.common import SettingWithCopyWarning   #I import this library and setting to be able to hide warnings that show me information I do not need.
+from IPython.display import display                     #I was getting an error claiming display was not defined. I import this to stop that error even though everything worked.
 
 def delete_columns (df, columns):
     df.drop(columns = columns, inplace=True)
     print("Deleted columns: ", list(columns))
     return
 
-def compare_columns (df, columns):
-    lengths_list = []
-    for i in columns:
-        lengths_list.append(len(df[i]))
-    max_len = max(lengths_list)
-    return max_len
 
 def compare_columns (df, columns):
     """
@@ -53,7 +48,7 @@ def compare_columns (df, columns):
         dict_x={}
         for y in range(len(columns)):
             comp = df[[columns[x],columns[y]]]
-            comp.fillna(" ",inplace = True)
+            comp.fillna(" ",inplace = True)                                     #Since Nans are evaluated as different (False) I am replacing them with strings with a white space so that they will evaluated as true.
             comp["test"] = comp.apply(lambda row: row[0] == row[1], axis=1)
             dict_x[columns[y]] = comp.test.sum()
         value_comparisons.append(dict_x)
@@ -61,19 +56,6 @@ def compare_columns (df, columns):
     value_comparisons_df = pd.DataFrame(value_comparisons)
     value_comparisons_df.index = columns
 
-
-    #Creates a sample DataFrame where at least one of the values is different in one of the columns
-    samples = df[columns]
-    """
-    def comparison (df, columns):
-        tracker = df[0]
-        size = len(columns)
-        for i in size:
-            tracker = tracker and df[i]
-
-    samples["test"] = samples.apply(lambda row: row)
-
-    """
 
     #Displays all the information collected
     print("Column information:")
@@ -87,3 +69,20 @@ def compare_columns (df, columns):
     display(df[columns].sample(5))
 
     pass
+
+
+def different_value_columns (df, columns):
+    """
+    This function takes a dataframe and for the specified 2 columns it will check where their values are not equal and return those in a new data frame and display it    
+    """
+#Builds a DataFrame comparing the number of rows in which each column is not the same as the other column.
+    value_comparisons = []
+    comp = df[[columns[0],columns[1]]]
+    comp.fillna(" ",inplace = True)           #Since Nans are evaluated as different (False) I am replacing them with strings with a white space so that they will evaluated as true.
+    for x in range(len(columns)):
+        comp ["Check"] = comp.apply(lambda row: row[0] == row[1], axis=1)
+    differents = comp[comp["Check"] == False]
+    counts = differents[columns[0]].count()
+
+    print(f"Columns differ in the following {counts} values")
+    return differents[columns]

@@ -14,7 +14,6 @@ The research questions addressed were the following:
 ### 1. USA is the most fatal country, only because it is the one with most data
 ### 2. Swimming is the deadliest activity
 ### 3. More men die of shark attacks than women
-### 4. Most people that die in a shark attack are between 35-40 years old
 
 
 The file originallly had 25.000+ rows but many of which were filled with empty data. After getting rid of mostly empty rows we had a file of around 6.300 rows. Some columns were redundant or added little to no value so they were deleted as well.
